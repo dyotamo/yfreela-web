@@ -9,13 +9,16 @@ CATEGORIES = [
     'Rails', 'Node', 'Deno'
 ]
 
-FREELAS = map(
-    lambda id: Freela(
-        id,
-        fake.name(),
-        fake.city(),
-        fake.paragraph(nb_sentences=5),
-        fake.email(),
-        fake.phone_number(),
-        choice(CATEGORIES),
-    ), range(100))
+FREELAS = []
+
+for index in range(100):
+    FREELAS.append(
+        Freela(
+            index,
+            fake.name(),
+            fake.city(),
+            fake.paragraph(nb_sentences=5),
+            fake.email(),
+            fake.phone_number(),
+            choice(CATEGORIES),
+        ))
