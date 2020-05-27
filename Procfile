@@ -1,1 +1,1 @@
-web: gunicorn -b 0.0.0.0:$PORT application:application
+web: gunicorn -b 0.0.0.0:$PORT application:application --reload --access-logfile access.log --log-level debug

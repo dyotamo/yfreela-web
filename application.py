@@ -1,40 +1,40 @@
-import json
-import falcon
+from json import dumps
+from falcon import API, HTTP_404
 
-from utils import CATEGORIES, FREELAS
+from utils import CATEGORIES
+from models import Freela
 
 
 class CategoryResource(object):
     def on_get(self, req, resp):
-        resp.body = json.dumps([category for category in CATEGORIES])
+        resp.body = dumps([category for category in CATEGORIES])
 
 
 class CategoryDetailsResource(object):
     def on_get(self, req, resp, name):
-        resp.body = json.dumps([
-            freela.__dict__ for freela in FREELAS
+        resp.body = dumps([
+            freela.to_json() for freela in Freela.select()
             if (freela.category.lower() == name.lower())
         ])
 
 
 class FreelaDetailsResource(object):
     def on_get(self, req, resp, id):
-        for freela in FREELAS:
-            if freela.id == int(id):
-                resp.body = json.dumps(freela.__dict__)
-                return
-        resp.status = falcon.HTTP_404
+        try:
+            resp.body = dumps(Freela[id].to_json())
+        except Freela.DoesNotExist:
+            resp.status = HTTP_404
 
 
 class SearchResource(object):
     def on_get(self, req, resp, query):
-        resp.body = json.dumps([
-            freela.__dict__ for freela in FREELAS
-            if (query.lower() in freela.category.lower())
+        resp.body = dumps([
+            freela.to_json() for freela in Freela.select().where(
+                Freela.category.contains(query))
         ])
 
 
-application = falcon.API()
+application = API()
 
 application.add_route('/categories', CategoryResource())
 application.add_route('/categories/{name}', CategoryDetailsResource())
