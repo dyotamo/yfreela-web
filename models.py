@@ -1,4 +1,5 @@
 from os import environ
+from hashlib import md5
 from peewee import (
     PostgresqlDatabase,
     SqliteDatabase,
@@ -29,9 +30,10 @@ class Freela(Model):
     email = CharField()
     phone = CharField()
     category = CharField()
+    password = CharField()
 
     def to_json(self):
-        return self.__dict__['__data__']
+        return self.__dict__['__data__'].pop('password')
 
     class Meta:
         database = db
@@ -39,13 +41,14 @@ class Freela(Model):
 
 def _generate_fake():
     FAKE = Faker()
-    for index in range(2000):
+    for index in range(1):
         Freela.create(name=FAKE.name(),
                       city=FAKE.city(),
                       bio=FAKE.paragraph(nb_sentences=5),
                       email=FAKE.email(),
                       phone=FAKE.phone_number(),
-                      category=choice(CATEGORIES))
+                      category=choice(CATEGORIES),
+                      password=md5(b'admin').hexdigest())
 
 
 if __name__ == "__main__":
