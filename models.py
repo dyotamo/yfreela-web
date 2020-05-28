@@ -33,7 +33,9 @@ class Freela(Model):
     password = CharField()
 
     def to_json(self):
-        return self.__dict__['__data__'].pop('password')
+        map = self.__dict__['__data__']
+        map.pop('password')
+        return map
 
     class Meta:
         database = db
