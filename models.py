@@ -27,7 +27,7 @@ class Freela(Model):
     name = CharField()
     city = CharField()
     bio = CharField(max_length=1500)
-    email = CharField()
+    email = CharField(unique=True)
     phone = CharField()
     category = CharField()
     password = CharField()
@@ -37,13 +37,16 @@ class Freela(Model):
         map.pop('password')
         return map
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         database = db
 
 
 def _generate_fake():
     FAKE = Faker()
-    for index in range(1):
+    for index in range(100):
         Freela.create(name=FAKE.name(),
                       city=FAKE.city(),
                       bio=FAKE.paragraph(nb_sentences=5),
@@ -56,6 +59,3 @@ def _generate_fake():
 if __name__ == "__main__":
     from datetime import datetime
     db.create_tables([Freela])
-    print('Starting faking data at {}'.format(datetime.now()))
-    _generate_fake()
-    print('Finished faking at {}'.format(datetime.now()))
