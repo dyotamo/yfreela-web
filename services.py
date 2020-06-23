@@ -30,3 +30,10 @@ class FreelaService:
         else:
             like_or_dislike.delete_instance()
             return self.get_freela(freela_id)
+
+    def liked(self, freela, device_id):
+        return Like.get_or_none(freela=freela, device_id=device_id) is not None
+
+    def disliked(self, freela, device_id):
+        return Dislike.get_or_none(freela=freela,
+                                   device_id=device_id) is not None

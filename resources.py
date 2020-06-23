@@ -28,9 +28,23 @@ class CategoryResource:
 
 class CategoryDetailsResource:
     def on_get(self, req, resp, cat_name):
-        resp.media = [
-            freela.to_json() for freela in freela_service.get_freelas(cat_name)
-        ]
+        device_id = req.params.get('device_id')
+        if device_id:
+            freelas = []
+            for freela in freela_service.get_freelas(cat_name):
+                json = freela.to_json()
+
+                json['liked'] = freela_service.liked(freela, device_id)
+                json['disliked'] = freela_service.disliked(freela, device_id)
+
+                freelas.append(json)
+
+            resp.media = freelas
+        else:
+            resp.media = [
+                freela.to_json()
+                for freela in freela_service.get_freelas(cat_name)
+            ]
 
 
 class FreelaDetailsResource:
