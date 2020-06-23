@@ -28,52 +28,35 @@ class CategoryResource:
 
 class CategoryDetailsResource:
     def on_get(self, req, resp, cat_name):
-        device_id = req.params.get('device_id')
-        if device_id:
-            freelas = []
-            for freela in freela_service.get_freelas(cat_name):
-                json = freela.to_json()
-
-                json['liked'] = freela_service.liked(freela, device_id)
-                json['disliked'] = freela_service.disliked(freela, device_id)
-
-                freelas.append(json)
-
-            resp.media = freelas
-        else:
-            resp.media = [
-                freela.to_json()
-                for freela in freela_service.get_freelas(cat_name)
-            ]
+        resp.media = [
+            freela.to_json() for freela in freela_service.get_freelas(cat_name)
+        ]
 
 
 class FreelaDetailsResource:
     def on_get(self, req, resp, freela_id):
         try:
-            resp.media = freela_service.get_freela(freela_id).to_json()
+            device_id = req.params.get('device_id')
+            freela = freela_service.get_freela(freela_id)
+
+            if device_id:
+                json = freela.to_json()
+                json['liked'] = freela_service.liked(freela, device_id)
+                json['disliked'] = freela_service.disliked(freela, device_id)
+
+                resp.media = json
+            else:
+                resp.media = freela.to_json()
         except Freela.DoesNotExist:
             resp.status = HTTP_404
 
 
 class SearchResource:
     def on_get(self, req, resp, cat_query):
-        device_id = req.params.get('device_id')
-        if device_id:
-            freelas = []
-            for freela in freela_service.search_freela(cat_query):
-                json = freela.to_json()
-
-                json['liked'] = freela_service.liked(freela, device_id)
-                json['disliked'] = freela_service.disliked(freela, device_id)
-
-                freelas.append(json)
-
-            resp.media = freelas
-        else:
-            resp.media = [
-                freela.to_json()
-                for freela in freela_service.search_freela(cat_query)
-            ]
+        resp.media = [
+            freela.to_json()
+            for freela in freela_service.search_freela(cat_query)
+        ]
 
 
 class LikeOrDislikeResource:
