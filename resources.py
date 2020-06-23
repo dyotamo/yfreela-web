@@ -89,7 +89,7 @@ class LikeOrDislikeResource:
 
             json = freela.to_json()
             json['liked'] = freela_service.liked(freela, device_id)
-            json['liked'] = freela_service.disliked(freela, device_id)
+            json['disliked'] = freela_service.disliked(freela, device_id)
 
             resp.media = json
         except Freela.DoesNotExist:
