@@ -57,10 +57,23 @@ class FreelaDetailsResource:
 
 class SearchResource:
     def on_get(self, req, resp, cat_query):
-        resp.media = [
-            freela.to_json()
-            for freela in freela_service.search_freela(cat_query)
-        ]
+        device_id = req.params.get('device_id')
+        if device_id:
+            freelas = []
+            for freela in freela_service.search_freela(cat_query):
+                json = freela.to_json()
+
+                json['liked'] = freela_service.liked(freela, device_id)
+                json['disliked'] = freela_service.disliked(freela, device_id)
+
+                freelas.append(json)
+
+            resp.media = freelas
+        else:
+            resp.media = [
+                freela.to_json()
+                for freela in freela_service.search_freela(cat_query)
+            ]
 
 
 class LikeOrDislikeResource:
