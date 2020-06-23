@@ -138,11 +138,5 @@ dmypy.json
 cython_debug/
 
 # self
-access.log
 freela.db
-login_data.json
-signup_data.json
-update_password_data.json
 .vscode
-.vscode/settings.json
-.vscode/.ropeproject/objectdb
