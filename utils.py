@@ -112,3 +112,18 @@ CATEGORIES = [
     "XPath", "XPL", "XPL0", "XQuery", "XSB", "XSLT", "Xtend", "YAML", "Yoix",
     "Yorick", "YQL", "Z notation", "Zeno", "ZOPL", "ZPL", "Zsh"
 ]
+
+LIKE_OR_DISLIKE_SCHEMA = {
+    "properties": {
+        "freela_id": {
+            "type": "integer"
+        },
+        "device_id": {
+            "type": "string"
+        },
+        "action": {
+            "type": "string"
+        }
+    },
+    "required": ["freela_id", "device_id", "action"]
+}

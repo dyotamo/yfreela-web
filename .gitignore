@@ -140,3 +140,5 @@ cython_debug/
 # self
 freela.db
 .vscode
+dislike_data.json
+like_data.json

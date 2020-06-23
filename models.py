@@ -5,6 +5,7 @@ from peewee import (
     SqliteDatabase,
     Model,
     CharField,
+    ForeignKeyField,
 )
 
 from faker import Faker
@@ -34,6 +35,8 @@ class Freela(Model):
 
     def to_json(self):
         map = self.__dict__['__data__']
+        map['likes'] = self.likes.count()
+        map['dislikes'] = self.dislikes.count()
         map.pop('password')
         return map
 
@@ -42,6 +45,24 @@ class Freela(Model):
 
     class Meta:
         database = db
+
+
+class Like(Model):
+    freela = ForeignKeyField(Freela, backref='likes')
+    device_id = CharField()
+
+    class Meta:
+        database = db
+        indexes = ((("freela_id", "device_id"), True), )
+
+
+class Dislike(Model):
+    freela = ForeignKeyField(Freela, backref='dislikes')
+    device_id = CharField()
+
+    class Meta:
+        database = db
+        indexes = ((("freela_id", "device_id"), True), )
 
 
 def _generate_fake():
@@ -57,5 +78,5 @@ def _generate_fake():
 
 
 if __name__ == "__main__":
-    db.create_tables([Freela])
+    db.create_tables([Freela, Like, Dislike])
     _generate_fake()

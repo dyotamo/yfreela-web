@@ -3,8 +3,8 @@ from falcon.media.validators import jsonschema
 from peewee import IntegrityError
 
 from services import FreelaService
-
 from models import Freela
+from utils import LIKE_OR_DISLIKE_SCHEMA
 
 freela_service = FreelaService()
 
@@ -17,6 +17,7 @@ class IndexResource:
             category_freelas='/categories/{cat_name}',
             freela_details='/freelas/{freela_id}',
             search_freelas='/search/{cat_query}',
+            like_or_dislike='/like_or_dislike',
         )
 
 
@@ -46,3 +47,18 @@ class SearchResource:
             freela.to_json()
             for freela in freela_service.search_freela(cat_query)
         ]
+
+
+class LikeOrDislikeResource:
+    @jsonschema.validate(LIKE_OR_DISLIKE_SCHEMA)
+    def on_post(self, req, resp):
+        freela_id = req.media['freela_id']
+        device_id = req.media['device_id']
+        action = req.media['action']
+
+        try:
+            freela = freela_service.like_or_dislike_freela(
+                freela_id, device_id, action)
+            resp.media = freela.to_json()
+        except Freela.DoesNotExist:
+            resp.status = HTTP_404
