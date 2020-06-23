@@ -86,6 +86,11 @@ class LikeOrDislikeResource:
         try:
             freela = freela_service.like_or_dislike_freela(
                 freela_id, device_id, action)
-            resp.media = freela.to_json()
+
+            json = freela.to_json()
+            json['liked'] = freela_service.liked(freela, device_id)
+            json['liked'] = freela_service.disliked(freela, device_id)
+
+            resp.media = json
         except Freela.DoesNotExist:
             resp.status = HTTP_404
